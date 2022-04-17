@@ -1,77 +1,66 @@
 
-import tkinter as tk
+import tkinter as *
+from PIL import Image, ImageTk
 
-WIN_H = 700
-WIN_W = 1200
-PANEL_H = WIN_H
-PANEL_W = 200
-CANVAS_H = WIN_H
-CANVAS_W = WIN_W-PANEL_W
 
-win = tk.Tk()
+
+def draw(ent1):
+    f = ent1.get()
+    root = Toplevel()
+
+    canv = Canvas(root, width=1000, height=1000, bg="white")
+    canv.create_line(500, 1000, 500, 0, width=2, arrow=LAST)
+    canv.create_line(0, 500, 1000, 500, width=2, arrow=LAST)
+
+    First_x = -500;
+
+    for i in range(16000):
+        if (i % 800 == 0):
+            k = First_x + (1 / 16) * i
+            canv.create_line(k + 500, -3 + 500, k + 500, 3 + 500, width=0.5, fill='black')
+            canv.create_text(k + 515, -10 + 500, text=str(k), fill="purple", font=("Helvectica", "10"))
+            if (k != 0):
+                canv.create_line(-3 + 500, k + 500, 3 + 500, k + 500, width=0.5, fill='black')
+                canv.create_text(20 + 500, k + 500, text=str(k), fill="purple", font=("Helvectica", "10"))
+        try:
+            x = First_x + (1 / 16) * i
+            new_f = f.replace('x', str(x))
+            y = -eval(new_f) + 500
+            x += 500
+            canv.create_oval(x, y, x + 1, y + 1, fill='black')
+        except:
+            pass
+    canv.pack()
+    root.mainloop()
+
+
+win = Tk()
 win.title('графики')
-win.config(width=WIN_W, height=WIN_H)
+win.config(width=300, height=400)
 win.resizable(False, False)
 
-panel = tk.Frame(win, width=PANEL_W, height=PANEL_H, bd=4, relief=tk.GROOVE)
-panel.place(x=0, y=0, width=PANEL_W, height=PANEL_H)
+path = 'C:\\Users\Public\Pictures/1.jpg'
+image = Image.open(path)
+image = ImageTk.PhotoImage(image)
 
-canvas = tk.Canvas(win, width=CANVAS_W, height=CANVAS_H, bg='#012')
-canvas.place(x=PANEL_W, y=0, width=CANVAS_W, height=CANVAS_W)
-
-# отрисовка осей на холсте
-def draw_axis(x_left, x_right, y_bottom, y_top):
-    dx = CANVAS_W / (x_right - x_left)
-    dy = CANVAS_H / (y_top - y_bottom)
-
-    cx = -x_left * dx
-    cy = y_top * dy
-
-    canvas.create_line(0, cy, CANVAS_W, cy, fill='white')
-    canvas.create_line(cx, 0, cx, CANVAS_H, fill='white')
-
-    x_step = (x_right - x_left) / 12
-    x = x_left
-    while x <= x_right:
-        x_canvas = (x - x_left)*dx
-        canvas.create_line(x_canvas, cy-3, x_canvas, cy+3, fill='white')
-        canvas.create_text(x_canvas, cy+15, text=str(round(x, 1)), font="Verdana 9", fill='white')
-        x += x_step
-
-    y_step = (y_top - y_bottom) / 12
-    y = y_top
-    while y >= y_bottom:
-        y_canvas = (y - y_top) * dy
-        canvas.create_line(cx-3, -y_canvas, cx+3, -y_canvas, fill='white')
-        canvas.create_text(cx+25, -y_canvas, text=str(round(y, 1)), font="Verdana 9", fill='white')
-        y -= y_step
+canvas = Canvas(win, width=300, height=400)
+canvas.pack(fill="both", expand="no")
+canvas.create_image(0, 0, anchor="nw", image=image)
 
 
 
-lab01 = tk.Label(panel, text='график')
-lab01.place(x=0, y=0, width=190, height=30)
-lab1 = tk.Label(panel, text='a')
-lab1.place(x=5, y=30, width=10, height=30)
-lab2 = tk.Label(panel, text='b')
-lab2.place(x=5, y=60, width=10, height=30)
-lab3 = tk.Label(panel, text='c')
+lab01 = Label(win, text='график')
+lab01.place(x=0, y=0, width=110, height=30)
 
-ent1 = tk.Entry(panel, bd=2)
-ent1.place(x=20, y=30, width=100)
+
+ent1 = Entry(win, bd=2)
+ent1.place(x=190, y=110, width=100)
 ent1.insert(1, '0')
-ent2 = tk.Entry(panel, bd=2)
-ent2.place(x=20, y=60, width=100)
-ent2.insert(1, '0')
-ent3 = tk.Entry(panel, bd=2)
-ent3.place(x=20, y=90, width=100)
-ent3.insert(1, '0')
 
-but1 = tk.Button(panel, text='Отрисовка')
-but1.place(x=5, y=150, width=100, height=30)
+
+but1 = Button(win, text='Отрисовка', command=lambda: draw(ent1))
+but1.place(x=190, y=200, width=100, height=30)
   
-x_left, x_right = -6, 12
-y_bottom, y_top = -13, 16
-draw_axis(x_left, x_right, y_bottom, y_top)
 
 win.mainloop()
       
