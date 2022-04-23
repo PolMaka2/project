@@ -1,36 +1,58 @@
 
-import tkinter as *
+from math import *
+from tkinter import *
+from tkinter import messagebox as mb
+from method1 import *
 from PIL import Image, ImageTk
 
 
-
-def draw(ent1):
+def calc(ent1, ent):
     f = ent1.get()
+    x = ent.get()
+    new_f = f.replace('x', str(x))
+    y = eval(new_f)
+    mb.showinfo(title="значение", message=y)
+
+
+def draw(ent1, ent2):
+    f = ent1.get()
+    color = ent2.get()
     root = Toplevel()
+
+    ent = Entry(root, bd=2)
+    ent.place(x=190, y=140, width=100)
+
+    but1 = Button(root, text='Значение', command=lambda: calc(ent1, ent))
+    but1.place(x=190, y=200, width=100, height=30)
 
     canv = Canvas(root, width=1000, height=1000, bg="white")
     canv.create_line(500, 1000, 500, 0, width=2, arrow=LAST)
     canv.create_line(0, 500, 1000, 500, width=2, arrow=LAST)
 
-    First_x = -500;
+    First_x = -500
 
     for i in range(16000):
         if (i % 800 == 0):
             k = First_x + (1 / 16) * i
-            canv.create_line(k + 500, -3 + 500, k + 500, 3 + 500, width=0.5, fill='black')
+            canv.create_line(k + 500, -3 + 500, k + 500, 3 + 500, width=0.5, fill="green")
             canv.create_text(k + 515, -10 + 500, text=str(k), fill="purple", font=("Helvectica", "10"))
             if (k != 0):
-                canv.create_line(-3 + 500, k + 500, 3 + 500, k + 500, width=0.5, fill='black')
+                canv.create_line(-3 + 500, k + 500, 3 + 500, k + 500, width=0.5, fill="green")
                 canv.create_text(20 + 500, k + 500, text=str(k), fill="purple", font=("Helvectica", "10"))
         try:
             x = First_x + (1 / 16) * i
             new_f = f.replace('x', str(x))
             y = -eval(new_f) + 500
             x += 500
-            canv.create_oval(x, y, x + 1, y + 1, fill='black')
+            canv.create_oval(x, y, x + 1, y + 1, outline=color, fill=color)
         except:
             pass
     canv.pack()
+    ent = Entry(root, bd=2)
+    ent.place(x=190, y=140, width=100)
+
+    but1 = Button(root, text='Значение', command=lambda: calc(ent1, ent))
+    but1.place(x=190, y=200, width=100, height=30)
     root.mainloop()
 
 
@@ -40,27 +62,25 @@ win.config(width=300, height=400)
 win.resizable(False, False)
 
 path = 'C:\\Users\Public\Pictures/1.jpg'
-image = Image.open(path)
-image = ImageTk.PhotoImage(image)
+#image = Image.open(path)
+#image = ImageTk.PhotoImage(image)
 
 canvas = Canvas(win, width=300, height=400)
 canvas.pack(fill="both", expand="no")
-canvas.create_image(0, 0, anchor="nw", image=image)
+#canvas.create_image(0, 0, anchor="nw", image=image)
 
-
-
-lab01 = Label(win, text='график')
-lab01.place(x=0, y=0, width=110, height=30)
-
+lab01 = Label(win, text='Введите уравнение: ')
+lab01.place(x=0, y=110, width=190, height=30)
 
 ent1 = Entry(win, bd=2)
 ent1.place(x=190, y=110, width=100)
 ent1.insert(1, '0')
 
+ent2 = Entry(win, bd=2)
+ent2.place(x=190, y=140, width=100)
 
-but1 = Button(win, text='Отрисовка', command=lambda: draw(ent1))
+but1 = Button(win, text='Отрисовка', command=lambda: draw(ent1, ent2))
 but1.place(x=190, y=200, width=100, height=30)
-  
+
 
 win.mainloop()
-      
