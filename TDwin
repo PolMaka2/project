@@ -1,19 +1,24 @@
 from tkinter import *
 
 root = Tk()
-root.title('3D')
-root.geometry('700x600')
+root.geometry('720x620')
 
 canvas = Canvas(root, width=700, height=600, bg='white')
 canvas.pack()
 
 pov = IntVar()
 pov.set(0)
-red = Radiobutton(text="1", variable=pov, value=0)
-green = Radiobutton(text="2", variable=pov, value=1)
-blue = Radiobutton(text="3", variable=pov, value=2)
-black = Radiobutton(text="4", variable=pov, value=3)
-red.place(x=550, y=460)
-green.place(x=550, y=480)
-blue.place(x=550, y=500)
-black.place(x=550, y=520)
+
+first = Radiobutton(text="1:  (x+z)/2", variable=pov, value=0)
+second = Radiobutton(text="2:  1/(x+EPS) + 1/(x+EPS)", variable=pov, value=1)
+third = Radiobutton(text="3:  x^2 + z^2", variable=pov, value=2)
+fourth = Radiobutton(text="4:  x*z", variable=pov, value=3)
+# Radiobutton - радиокнопка, не создают по одной, работающую по принципу переключателей. Когда включена одна, другие выключены.
+
+first.place(x=550, y=460)
+second.place(x=550, y=480)
+third.place(x=550, y=500)
+fourth.place(x=550, y=520)
+# расположение кнопок для выбора отрисовки граф
+
+root.mainloop()
