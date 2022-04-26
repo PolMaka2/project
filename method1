@@ -1,0 +1,21 @@
+from math import *
+from tkinter import *
+from TDwin import *
+
+EPS = 1e-6
+
+
+def par_el(x, z):
+    return (x+z)/2
+
+
+def par_gip(x):
+    return 1/(x+EPS) + 1/(x+EPS)
+
+
+def par_odn(x, z):
+    return x*x + z*z
+
+
+def par_dv(x, z):
+    return x*z
