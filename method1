@@ -36,6 +36,30 @@ step_z_entry.place(x=20, y=560)
 step_z_text = Label(text="шаг по z:")
 step_z_text.place(x=20, y=540)
 
+
+lim_x_begin_entry = Entry(root)
+lim_x_begin_entry.place(x=170, y=520)
+lim_x_begin_text = Label(text="начало х:")
+lim_x_begin_text.place(x=170, y=500)
+
+lim_x_end_entry = Entry(root)
+lim_x_end_entry.place(x=350, y=520)
+lim_x_end_text = Label(text="конец x:")
+lim_x_end_text.place(x=350, y=500)
+
+lim_z_begin_entry = Entry(root)
+lim_z_begin_entry.place(x=170, y=560)
+lim_z_begin_text = Label(text="начало z:")
+lim_z_begin_text.place(x=170, y=540)
+
+lim_z_end_entry = Entry(root)
+lim_z_end_entry.place(x=350, y=560)
+lim_z_end_text = Label(text="конец z:")
+lim_z_end_text.place(x=350, y=540)
+
+
+
+
 b_pnt = Button(root, text='Рисуем', width=42, height=1)
 b_pnt.place(x=0, y=480)
 root.bind('<Button-3>')
