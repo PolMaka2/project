@@ -19,3 +19,24 @@ def par_odn(x, z):
 
 def par_dv(x, z):
     return x*z
+    
+    
+
+step_x = StringVar() # позволяет создать привязку к строке
+step_x.set(0)
+step_x_entry = Entry(root, textvariable=step_x) #Entry представляет поле для ввода текста. textvariable: устанавливает привязку к элементу StringVar
+step_x_entry.place(x=20, y=520)
+step_x_text = Label(text="шаг по х:")
+step_x_text.place(x=20, y=500)
+
+step_z = StringVar()
+step_z.set(0)
+step_z_entry = Entry(root, textvariable=step_z)
+step_z_entry.place(x=20, y=560)
+step_z_text = Label(text="шаг по z:")
+step_z_text.place(x=20, y=540)
+
+b_pnt = Button(root, text='Рисуем', width=42, height=1)
+b_pnt.place(x=0, y=480)
+root.bind('<Button-3>')
+
