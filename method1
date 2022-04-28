@@ -58,6 +58,13 @@ lim_z_end_text = Label(text="конец z:")
 lim_z_end_text.place(x=350, y=540)
 
 
+def rotate_x(y, z, ox):
+
+
+def rotate_y(x, z, oy):
+
+
+def rotate_z(x, y, oz):
 
 
 b_pnt = Button(root, text='Рисуем', width=42, height=1)
