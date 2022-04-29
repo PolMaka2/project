@@ -3,6 +3,11 @@ from tkinter import *
 from TDwin import *
 
 EPS = 1e-6
+ox = 0
+oy = 0
+oz = 0
+WIDTH = 700
+HEIGHT = 600
 
 
 def par_el(x, z):
@@ -19,8 +24,7 @@ def par_odn(x, z):
 
 def par_dv(x, z):
     return x*z
-    
-    
+
 
 step_x = StringVar() # позволяет создать привязку к строке
 step_x.set(0)
@@ -35,7 +39,6 @@ step_z_entry = Entry(root, textvariable=step_z)
 step_z_entry.place(x=20, y=560)
 step_z_text = Label(text="шаг по z:")
 step_z_text.place(x=20, y=540)
-
 
 lim_x_begin_entry = Entry(root)
 lim_x_begin_entry.place(x=170, y=520)
@@ -58,16 +61,28 @@ lim_z_end_text = Label(text="конец z:")
 lim_z_end_text.place(x=350, y=540)
 
 
-def rotate_x(y, z, ox):
+def clean():
+    canvas.delete(ALL) # удаляет все объекты на холсте
 
 
-def rotate_y(x, z, oy):
+def o_x():
+    global ox
+    clean()
+    ox += 1
 
 
-def rotate_z(x, y, oz):
+def o_y():
+    global oy
+    clean()
+    oy += 1
 
 
+def o_z():
+    global oz
+    clean()
+    oz += 1
+        
+        
 b_pnt = Button(root, text='Рисуем', width=42, height=1)
 b_pnt.place(x=0, y=480)
-root.bind('<Button-3>')
-
+root.bind('<Button-3>', lambda event: o_x())
