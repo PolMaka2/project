@@ -119,8 +119,61 @@ def trans(x, y, z, ox, oy, oz):
     return [x, y, z, res_x, res_y]
 
 
-def pnt():
+def edge_treat(x, y, z, ox, oy, oz, res_x, res_y):
     pass
+
+
+def vis(x, y):
+    pass
+
+
+def pnt():
+    global ox
+    global oy
+    global oz
+    global top
+    global down
+
+    step_x = float(step_x_entry.get()) # экран в горизонтальном направлении
+    step_z = float(step_z_entry.get()) # экран в вертикальном направлении
+    x_begin = float(lim_x_begin_entry.get()) # масив, содержащий ординату верхнего горазонта
+    x_end  = float(lim_x_end_entry.get()) # масив, содержащий ординату нижнего горазонта
+    z_begin  = float(lim_z_begin_entry.get()) # текущее значение функции
+    z_end  = float(lim_z_end_entry.get()) # текущее значени точки
+    pv = pov.get() # предидущее значение
+
+    x_left = -1 # видима и ниже нижнего горизонта
+    y_left  = -1 # видима и ниже нижнего горизонта
+    x_right  = -1 # видима и ниже нижнего горизонта
+    y_right  = -1 # видима и ниже нижнего горизонта
+    x_pr = 0 # невидима
+    y_pr = 0  # невидима
+
+    z = z_end # z максимальное \ z минимальное
+    while z >= z_begin:  # пока z макс больше текущего значения функции
+        if pv == 0:  # если предидущее значение 0
+            y_p = par_el((x_begin, z)  # то для 1 графика y_p = решение 1 уравнения
+        elif pv == 1:
+            y_p = par_gip(x_begin) # то для 2 графика ...
+        elif pv == 2:
+            y_p = par_odn(x_begin, z)
+        elif pv == 3:
+            y_p = par_dv(x_begin, z)
+
+        bf = trans(x_begin, y_p, z, ox, oy, oz, x_pr, y_pr) # поворот по осям
+        x_begin = bf[0]
+        y_p = bf[1]
+        z = bf[2]
+        x_pr = bf[3]
+        y_pr = bf[4]
+
+        bf = edge_treat(x_pr, y_pr, x_left, y_left) # обработка бокового ребра сверху вниз
+        x_pr = bf[0]
+        y_pr = bf[1]
+        x_left = bf[2]
+        y_left = bf[3]
+
+        Pflag = vis(x_pr, y_pr) # видимость
 
 
 # поворот по оси ох
