@@ -147,12 +147,27 @@ def horizont(x1, y1, x2, y2):
                 canvas.create_line(x_pr, WIDTH-y_pr, x, WIDTH-y, fill='black')
 
 
-def edge_treat(x, y, z, ox, oy, oz, res_x, res_y):
-    pass
 
 
+# обработка бокового ребра сверху вниз
+def edge_treat(x, y, x_edge, y_edge):
+    if x_edge != -1:
+        horizont(x_edge, y_edge, x, y)
+    x_edge = x # x ребра
+    y_edge = y # y ребра
+    return [x, y, x_edge, y_edge]
+
+
+# определение видимости точки
 def vis(x, y):
-    pass
+    global top
+    global down
+    if (y < top[x]) and (y > down[x]):
+        return 0 # невидима
+    if y >= top[x]:
+        return 1 # видима и выше нижнего горизонта
+    return -1 # видима и ниже нижнего горизонта
+
 
 def intersect(x1, y1, x2, y2, ar, xi, yi): # ar - масив
     pass
