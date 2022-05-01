@@ -119,6 +119,44 @@ def trans(x, y, z, ox, oy, oz):
     return [x, y, z, res_x, res_y]
 
 
+
+
+# поэтапно расуется каждая линия графика, слева направо
+def horizont(x1, y1, x2, y2):
+    global top
+    global down
+
+    # определяется видимость линии относительно пользователя
+    if (x1 < 0) or (x1 > WIDTH-1):
+        return
+    if (x2 < 0) or (x2 > WIDTH-1):
+        return
+
+    if x2 < x1:
+        tmp = x1
+        x1 = x2
+        x2 = tmp
+        tmp = y1
+        y1 = y2
+        y2 = tmp
+
+    if (x2 - x1) == 0:
+        top[x2] = max(top[x2], y2)
+        down[x2] = min(down[x2], y2)
+        if (x2 >= 0) and (x2 <= WIDTH):
+            canvas.create_line(x1, WIDTH-y1, x2, WIDTH-y2, fill='black')
+    else:
+        x_pr = x1
+        y_pr = y1
+        m = (y2 - y1) / (x2 - x1)  # наклон
+        for x in range(x1, x2):
+            y = round(m * (x - x1) + y1)
+            top[x] = max(top[x], y)
+            down[x] = min(down[x], y)
+            if (x >= 0) and (x <= WIDTH):
+                canvas.create_line(x_pr, WIDTH-y_pr, x, WIDTH-y, fill='black')
+
+
 def edge_treat(x, y, z, ox, oy, oz, res_x, res_y):
     pass
 
