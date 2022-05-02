@@ -2,6 +2,7 @@ from tkinter import *
 
 root = Tk()
 root.geometry('720x620')
+root.title('Отрисовка трёхмерных поверхностей')
 
 canvas = Canvas(root, width=700, height=600, bg='white')
 canvas.pack()
@@ -9,16 +10,58 @@ canvas.pack()
 pov = IntVar()
 pov.set(0)
 
+# Radiobutton - радиокнопка, не создают по одной, работающую по принципу переключателей. Когда включена одна, другие выключены.
 first = Radiobutton(text="1:  (x+z)/2", variable=pov, value=0)
 second = Radiobutton(text="2:  1/(x+EPS) + 1/(x+EPS)", variable=pov, value=1)
 third = Radiobutton(text="3:  x^2 + z^2", variable=pov, value=2)
 fourth = Radiobutton(text="4:  x*z", variable=pov, value=3)
-# Radiobutton - радиокнопка, не создают по одной, работающую по принципу переключателей. Когда включена одна, другие выключены.
 
+# расположение кнопок для выбора отрисовки граф
 first.place(x=550, y=460)
 second.place(x=550, y=480)
 third.place(x=550, y=500)
 fourth.place(x=550, y=520)
-# расположение кнопок для выбора отрисовки граф
 
-root.mainloop()
+
+step_x = StringVar()                                 # позволяет создать привязку к строке
+step_x.set(0.5)
+step_x_entry = Entry(root, textvariable=step_x)     # Entry представляет поле для ввода текста. textvariable: устанавливает привязку к элементу StringVar
+step_x_entry.place(x=20, y=520)
+step_x_text = Label(text="шаг по х:")
+step_x_text.place(x=20, y=500)
+
+step_z = StringVar()
+step_z.set(0.5)
+step_z_entry = Entry(root, textvariable=step_z)
+step_z_entry.place(x=20, y=560)
+step_z_text = Label(text="шаг по z:")
+step_z_text.place(x=20, y=540)
+
+lim_x_begin = StringVar()
+lim_x_begin.set(-7)
+lim_x_begin_entry = Entry(root, textvariable=lim_x_begin)
+lim_x_begin_entry.place(x=170, y=520)
+lim_x_begin_text = Label(text="начало х:")
+lim_x_begin_text.place(x=170, y=500)
+
+lim_x_end = StringVar()
+lim_x_end.set(7)
+lim_x_end_entry = Entry(root, textvariable=lim_x_end)
+lim_x_end_entry.place(x=350, y=520)
+lim_x_end_text = Label(text="конец x:")
+lim_x_end_text.place(x=350, y=500)
+
+lim_z_begin = StringVar()
+lim_z_begin.set(-7)
+lim_z_begin_entry = Entry(root, textvariable=lim_z_begin)
+lim_z_begin_entry.place(x=170, y=560)
+lim_z_begin_text = Label(text="начало z:")
+lim_z_begin_text.place(x=170, y=540)
+
+lim_z_end = StringVar()
+lim_z_end.set(7)
+lim_z_end_entry = Entry(root, textvariable=lim_z_end)
+lim_z_end_entry.place(x=350, y=560)
+lim_z_end_text = Label(text="конец z:")
+lim_z_end_text.place(x=350, y=540)
+
