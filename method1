@@ -1,5 +1,4 @@
 from math import *
-from tkinter import *
 from TDwin import *
 
 EPS = 1e-6
@@ -30,35 +29,43 @@ def par_dv(x, z):
 
 
 step_x = StringVar() # позволяет создать привязку к строке
-step_x.set(0)
+step_x.set(0.5)
 step_x_entry = Entry(root, textvariable=step_x) #Entry представляет поле для ввода текста. textvariable: устанавливает привязку к элементу StringVar
 step_x_entry.place(x=20, y=520)
 step_x_text = Label(text="шаг по х:")
 step_x_text.place(x=20, y=500)
 
 step_z = StringVar()
-step_z.set(0)
+step_z.set(0.5)
 step_z_entry = Entry(root, textvariable=step_z)
 step_z_entry.place(x=20, y=560)
 step_z_text = Label(text="шаг по z:")
 step_z_text.place(x=20, y=540)
 
-lim_x_begin_entry = Entry(root)
+lim_x_begin = StringVar()
+lim_x_begin.set(-7)
+lim_x_begin_entry = Entry(root, textvariable=lim_x_begin)
 lim_x_begin_entry.place(x=170, y=520)
 lim_x_begin_text = Label(text="начало х:")
 lim_x_begin_text.place(x=170, y=500)
 
-lim_x_end_entry = Entry(root)
+lim_x_end = StringVar()
+lim_x_end.set(-7)
+lim_x_end_entry = Entry(root, textvariable=lim_x_end)
 lim_x_end_entry.place(x=350, y=520)
 lim_x_end_text = Label(text="конец x:")
 lim_x_end_text.place(x=350, y=500)
 
-lim_z_begin_entry = Entry(root)
+lim_z_begin = StringVar()
+lim_z_begin.set(7)
+lim_z_begin_entry = Entry(root, textvariable=lim_z_begin)
 lim_z_begin_entry.place(x=170, y=560)
 lim_z_begin_text = Label(text="начало z:")
 lim_z_begin_text.place(x=170, y=540)
 
-lim_z_end_entry = Entry(root)
+lim_z_end = StringVar()
+lim_z_end.set(7)
+lim_z_end_entry = Entry(root, textvariable=lim_z_end)
 lim_z_end_entry.place(x=350, y=560)
 lim_z_end_text = Label(text="конец z:")
 lim_z_end_text.place(x=350, y=540)
@@ -147,8 +154,6 @@ def horizont(x1, y1, x2, y2):
                 canvas.create_line(x_pr, WIDTH-y_pr, x, WIDTH-y, fill='black')
 
 
-
-
 # обработка бокового ребра сверху вниз
 def edge_treat(x, y, x_edge, y_edge):
     if x_edge != -1:
@@ -169,10 +174,31 @@ def vis(x, y):
     return -1 # видима и ниже нижнего горизонта
 
 
+# пересечение текущей кривой с горизонтом
 def intersect(x1, y1, x2, y2, ar, xi, yi): # ar - масив
-    pass
+    xi = x1
+    yi = y1
+    dx = x2 - x1
+    dy_c = y2 - y1
+    dy_p = ar[x2] - ar[x1]
+    m = dy_c / dx
+
+    if dx == 0:
+        xi = x2
+        yi = ar[x2]
+
+    elif (y1 == ar[x1]) and (y2 == ar[x2]):
+        xi = x1
+        yi = y1
+
+    else:
+        xi = x1 - round(dx * (y1 - ar[x1]) / (dy_c - dy_p))
+        yi = round((xi-x1) * m + y1)
+
+    return [xi, yi]
 
 
+# отрисовка видемой линии между точками, заданными их координатами
 def pnt():
     global ox
     global oy
@@ -183,15 +209,15 @@ def pnt():
     step_x = float(step_x_entry.get()) # экран в горизонтальном направлении
     step_z = float(step_z_entry.get()) # экран в вертикальном направлении
     x_begin = float(lim_x_begin_entry.get()) # масив, содержащий ординату верхнего горазонта
-    x_end  = float(lim_x_end_entry.get()) # масив, содержащий ординату нижнего горазонта
-    z_begin  = float(lim_z_begin_entry.get()) # текущее значение функции
-    z_end  = float(lim_z_end_entry.get()) # текущее значени точки
+    x_end = float(lim_x_end_entry.get()) # масив, содержащий ординату нижнего горазонта
+    z_begin = float(lim_z_begin_entry.get()) # текущее значение функции
+    z_end = float(lim_z_end_entry.get()) # текущее значени точки
     pv = pov.get() # предидущее значение
 
     x_left = -1 # видима и ниже нижнего горизонта
-    y_left  = -1 # видима и ниже нижнего горизонта
-    x_right  = -1 # видима и ниже нижнего горизонта
-    y_right  = -1 # видима и ниже нижнего горизонта
+    y_left = -1 # видима и ниже нижнего горизонта
+    x_right = -1 # видима и ниже нижнего горизонта
+    y_right = -1 # видима и ниже нижнего горизонта
     x_pr = 0 # невидима
     y_pr = 0  # невидима
 
@@ -221,96 +247,95 @@ def pnt():
 
         Pflag = vis(x_pr, y_pr) # видимость
 
-            #вычисление ф-ции для каждой точки на кривой, лежащей в плоскости
-            x = x_begin  # минимальное \ максимальное
-            while x <= x_end:
-                x_c = 0
-                y_c = 0
-                xi = 0
-                yi = 0
-                if pv == 0:
-                    y_p = par_el(x, z)
-                elif pv == 1:
-                    y_p = par_gip(x)
-                elif pv == 2:
-                    y_p = par_odn(x, z)
-                elif pv == 3:
-                    y_p = par_dv(x, z)
+        x = x_begin  # минимальное \ максимальное
+        while x <= x_end:
+            x_c = 0
+            y_c = 0
+            xi = 0
+            yi = 0
+            if pv == 0:
+                y_p = par_el(x, z)
+            elif pv == 1:
+                y_p = par_gip(x)
+            elif pv == 2:
+                y_p = par_odn(x, z)
+            elif pv == 3:
+                y_p = par_dv(x, z)
 
-                bf = trans(x, y_p, z, ox, oy, oz, x_c, y_c)
-                x = bf[0]
-                y_p = bf[1]
-                z = bf[2]
-                x_c = bf[3]
-                y_c = bf[4]
+            bf = trans(x, y_p, z, ox, oy, oz, x_c, y_c)
+            x = bf[0]
+            y_p = bf[1]
+            z = bf[2]
+            x_c = bf[3]
+            y_c = bf[4]
 
-                Tflag = vis(x_c, y_c)  # видимость текущей точки
+            Tflag = vis(x_c, y_c)  # видимость текущей точки
 
-                # проверка видимости точки и заполнение массива горизонта
-                if Tflag == Pflag:
-                    if Pflag != 0:
-                        horizont(x_pr, y_pr, x_c, y_c)
+            # проверка видимости точки и заполнение массива горизонта
+            if Tflag == Pflag:
+                if Pflag != 0:
+                    horizont(x_pr, y_pr, x_c, y_c)
 
-                elif Tflag == 0:
-                    if Pflag == 1:
-                        bf = intersect(x_pr, y_pr, x_c, y_c, top, xi, yi)
-                        xi = bf[0]
-                        yi = bf[1]
+            elif Tflag == 0:
+                if Pflag == 1:
+                    bf = intersect(x_pr, y_pr, x_c, y_c, top, xi, yi)
+                    xi = bf[0]
+                    yi = bf[1]
 
-                    else:
-                        bf = intersect(x_pr, y_pr, x_c, y_c, down, xi, yi)
-                        xi = bf[0]
-                        yi = bf[1]
+                else:
+                    bf = intersect(x_pr, y_pr, x_c, y_c, down, xi, yi)
+                    xi = bf[0]
+                    yi = bf[1]
+                horizont(x_pr, y_pr, xi, yi)
+
+            elif Tflag == 1:
+                if Pflag == 0:
+                    bf = intersect(x_pr, y_pr, x_c, y_c, top, xi, yi)
+                    xi = bf[0]
+                    yi = bf[1]
                     horizont(x_pr, y_pr, xi, yi)
 
-                elif Tflag == 1:
-                    if Pflag == 0:
-                        bf = intersect(x_pr, y_pr, x_c, y_c, top, xi, yi)
-                        xi = bf[0]
-                        yi = bf[1]
-                        horizont(x_pr, y_pr, xi, yi)
-
-                    else:
-
-                        bf = intersect(x_pr, y_pr, x_c, y_c, top, xi, yi)
-                        xi = bf[0]
-                        yi = bf[1]
-                        horizont(x_pr, y_pr, xi, yi)
-
-                        bf = intersect(x_pr, y_pr, x_c, y_c, down, xi, yi)
-                        xi = bf[0]
-                        yi = bf[1]
-                        horizont(xi, yi, x_pr, y_pr)
                 else:
-                    if Pflag == 0:
-                        bf = intersect(x_pr, y_pr, x_c, y_c, down, xi, yi)
-                        xi = bf[0]
-                        yi = bf[1]
-                        horizont(x_pr, y_pr, xi, yi)
 
-                    else:
+                    bf = intersect(x_pr, y_pr, x_c, y_c, top, xi, yi)
+                    xi = bf[0]
+                    yi = bf[1]
+                    horizont(x_pr, y_pr, xi, yi)
 
-                        bf = intersect(x_pr, y_pr, x_c, y_c, top, xi, yi)
-                        xi = bf[0]
-                        yi = bf[1]
-                        horizont(x_pr, y_pr, xi, yi)
+                    bf = intersect(x_pr, y_pr, x_c, y_c, down, xi, yi)
+                    xi = bf[0]
+                    yi = bf[1]
+                    horizont(xi, yi, x_pr, y_pr)
+            else:
+                if Pflag == 0:
+                    bf = intersect(x_pr, y_pr, x_c, y_c, down, xi, yi)
+                    xi = bf[0]
+                    yi = bf[1]
+                    horizont(x_pr, y_pr, xi, yi)
 
-                        bf = intersect(x_pr, y_pr, x_c, y_c, down, xi, yi)
-                        xi = bf[0]
-                        yi = bf[1]
-                        horizont(xi, yi, x_pr, y_pr)
+                else:
 
-                Pflag = Tflag
-                x_pr = x_c
-                y_pr = y_c
-                x += step_x
+                    bf = intersect(x_pr, y_pr, x_c, y_c, top, xi, yi)
+                    xi = bf[0]
+                    yi = bf[1]
+                    horizont(x_pr, y_pr, xi, yi)
 
-            bf = edge_treat(x_pr, y_pr, x_right, y_right)
-            x_pr = bf[0]
-            y_pr = bf[1]
-            x_r = bf[2]
-            y_r = bf[3]
-            z -= step_z
+                    bf = intersect(x_pr, y_pr, x_c, y_c, down, xi, yi)
+                    xi = bf[0]
+                    yi = bf[1]
+                    horizont(xi, yi, x_pr, y_pr)
+
+            Pflag = Tflag
+            x_pr = x_c
+            y_pr = y_c
+            x += step_x
+
+        bf = edge_treat(x_pr, y_pr, x_right, y_right)
+        x_pr = bf[0]
+        y_pr = bf[1]
+        x_right = bf[2]
+        y_right = bf[3]
+        z -= step_z
 
 
 def clean():
@@ -350,5 +375,6 @@ b_pnt.place(x=0, y=480)
 root.bind('<Button-1>', lambda event: o_x())
 root.bind('<Button-3>', lambda event: o_y())
 root.bind('<Button-2>', lambda event: o_z())
+
 
 
