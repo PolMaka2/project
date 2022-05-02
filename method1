@@ -1,6 +1,7 @@
 from math import *
 from TDwin import *
 
+
 EPS = 1e-6
 PI = 3.14
 ox = 0
@@ -28,49 +29,7 @@ def par_dv(x, z):
     return x*z
 
 
-step_x = StringVar() # позволяет создать привязку к строке
-step_x.set(0.5)
-step_x_entry = Entry(root, textvariable=step_x) #Entry представляет поле для ввода текста. textvariable: устанавливает привязку к элементу StringVar
-step_x_entry.place(x=20, y=520)
-step_x_text = Label(text="шаг по х:")
-step_x_text.place(x=20, y=500)
-
-step_z = StringVar()
-step_z.set(0.5)
-step_z_entry = Entry(root, textvariable=step_z)
-step_z_entry.place(x=20, y=560)
-step_z_text = Label(text="шаг по z:")
-step_z_text.place(x=20, y=540)
-
-lim_x_begin = StringVar()
-lim_x_begin.set(-7)
-lim_x_begin_entry = Entry(root, textvariable=lim_x_begin)
-lim_x_begin_entry.place(x=170, y=520)
-lim_x_begin_text = Label(text="начало х:")
-lim_x_begin_text.place(x=170, y=500)
-
-lim_x_end = StringVar()
-lim_x_end.set(-7)
-lim_x_end_entry = Entry(root, textvariable=lim_x_end)
-lim_x_end_entry.place(x=350, y=520)
-lim_x_end_text = Label(text="конец x:")
-lim_x_end_text.place(x=350, y=500)
-
-lim_z_begin = StringVar()
-lim_z_begin.set(7)
-lim_z_begin_entry = Entry(root, textvariable=lim_z_begin)
-lim_z_begin_entry.place(x=170, y=560)
-lim_z_begin_text = Label(text="начало z:")
-lim_z_begin_text.place(x=170, y=540)
-
-lim_z_end = StringVar()
-lim_z_end.set(7)
-lim_z_end_entry = Entry(root, textvariable=lim_z_end)
-lim_z_end_entry.place(x=350, y=560)
-lim_z_end_text = Label(text="конец z:")
-lim_z_end_text.place(x=350, y=540)
-
-
+# поиск координаты точки после поворота по ox
 def rotate_x(y, z, ox):
     ox = ox * PI / 180
     buf = y
@@ -95,10 +54,10 @@ def rotate_z(x, y, oz):
     return [x, y]
 
 
-def trans(x, y, z, ox, oy, oz, x_pr, y_pr):
+def trans(x, y, z, ox, oy, oz, res_x, res_y):
     k = 35
-    x_c = WIDTH
-    y_c = WIDTH
+    x_c = WIDTH / 2
+    y_c = WIDTH / 2
     x_tmp = x
     y_tmp = y
     z_tmp = z
@@ -109,10 +68,12 @@ def trans(x, y, z, ox, oy, oz, x_pr, y_pr):
 
     bf = rotate_y(x_tmp, z_tmp, oy)
     x_tmp = bf[0]
+    z_tmp = bf[1]
 
     bf = rotate_z(x_tmp, y_tmp, oz)
     x_tmp = bf[0]
     y_tmp = bf[1]
+
     res_x = round(x_tmp * k + x_c)
     res_y = round(y_tmp * k + y_c)
     return [x, y, z, res_x, res_y]
@@ -183,16 +144,18 @@ def intersect(x1, y1, x2, y2, ar, xi, yi): # ar - масив
     dy_p = ar[x2] - ar[x1]
     m = dy_c / dx
 
+    # проверка бесконечности наклона
     if dx == 0:
         xi = x2
         yi = ar[x2]
 
+    # вычисление перечисления
     elif (y1 == ar[x1]) and (y2 == ar[x2]):
         xi = x1
         yi = y1
 
     else:
-        xi = x1 - round(dx * (y1 - ar[x1]) / (dy_c - dy_p))
+        xi = x1 - round(dx * (y1 - ar[x1]) / (dy_c - dy_p))  # округляет значение
         yi = round((xi-x1) * m + y1)
 
     return [xi, yi]
@@ -221,6 +184,7 @@ def pnt():
     x_pr = 0 # невидима
     y_pr = 0  # невидима
 
+    # вычисление ф-ции на на каждой плоскости, начиная с ближайшей к пользователю z макс
     z = z_end # z максимальное \ z минимальное
     while z >= z_begin:  # пока z макс больше текущего значения функции
         if pv == 0:  # если предидущее значение 0
@@ -245,9 +209,10 @@ def pnt():
         x_left = bf[2]
         y_left = bf[3]
 
-        Pflag = vis(x_pr, y_pr) # видимость
+        Pflag = vis(x_pr, y_pr) # видимость предидущей точки
 
-        x = x_begin  # минимальное \ максимальное
+        # вычисление ф-ции для каждой точки на кривой, лежащей в плоскости
+        x = x_begin # минимальное \ максимальное
         while x <= x_end:
             x_c = 0
             y_c = 0
@@ -269,7 +234,7 @@ def pnt():
             x_c = bf[3]
             y_c = bf[4]
 
-            Tflag = vis(x_c, y_c)  # видимость текущей точки
+            Tflag = vis(x_c, y_c) # видимость текущей точки
 
             # проверка видимости точки и заполнение массива горизонта
             if Tflag == Pflag:
@@ -343,17 +308,16 @@ def clean():
     global down
     top = [0] * WIDTH
     down = [HEIGHT] * WIDTH
-    canvas.delete("all")  # удаляет все объекты на холсте
+    canvas.delete("all")
 
 
-# поворот по оси ох
 def o_x():
     clean()
     global ox
     ox += 2
     pnt()
 
-
+'''
 # поворот по оси оy
 def o_y():
     clean()
@@ -368,13 +332,11 @@ def o_z():
     global oz
     oz += 2
     pnt()
+'''
 
-
-b_pnt = Button(root, text='Рисуем', width=42, height=1)
+b_pnt = Button(root, text='Рисуем', width=42, height=1, command=lambda: pnt())
 b_pnt.place(x=0, y=480)
 root.bind('<Button-1>', lambda event: o_x())
-root.bind('<Button-3>', lambda event: o_y())
-root.bind('<Button-2>', lambda event: o_z())
-
-
+#root.bind('<Button-3>', lambda event: o_y())
+#root.bind('<Button-2>', lambda event: o_z())
 
