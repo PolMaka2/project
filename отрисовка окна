@@ -24,13 +24,13 @@ def draw(ent1, ent2):
 
     First_x = -500
     for i in range(40000):
-        if (i % 800 == 0):
+        if i % 800 == 0:
             k = First_x + (1 / 16) * i
             canv.create_line(k + 500, -3 + 500, k + 500, 3 + 500, width=0.5, fill="green")
             canv.create_text(k + 515, -10 + 500, text=str(k), fill="purple")
-            if (k != 0):
+            if k != 0:
                 canv.create_line(-3 + 500, k + 500, 3 + 500, k + 500, width=0.5, fill="green")
-                canv.create_text(20 + 500, k + 500, text=str(k), fill="purple")
+                canv.create_text(20 + 500, k + 500, text=str(-k), fill="purple")
         try:
             x = First_x + (1 / 16) * i
             new_f = f.replace('x', str(x))
@@ -47,7 +47,6 @@ def draw(ent1, ent2):
     but1.place(x=190, y=200, width=100, height=30)
 
     root.mainloop()
-
 
 win = Tk()
 win.title('Создание графиков')
